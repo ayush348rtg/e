@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ezee Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="menu_style.css">
+    <script src="side_menu.js" defer></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background: #351757;  /* same purple background */
+      color: white;
+      height: 200px;        /* fixed header height */
+      position: relative;   /* allows child elements to be positioned freely */
+    }
+    .head-menu-sitename {
+      position: absolute;   /* now you can place it anywhere */
+      top: 10px;            /* distance from top of header */
+      left: 10px;           /* distance from left of header */
+      display: flex;
+      gap: 7px;            /* space between icon and site name */
+      align-items: center;  /* vertically align icon + text */
+    }
+    .head-classicon {
+      background-color: #4E2778;
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .site-name {
+      color: white;
+      background-color: #4E2778;
+      border-radius: 25px;   /* half of height → pill shape */
+      height: 40px;          /* fixed height */
+      padding: 0 20px;       /* horizontal padding for spacing, top/bottom padding is 0 */
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;    /* vertically center text */
+      white-space: nowrap;    /* prevent text from wrapping */
+    }
+    
+    main {
+      padding: 10px;
+      background-color: white;
+      font-family: Arial, sans-serif;
+      min-height: 100vh; /* 100% of the viewport height */
+    }
+/*☢️☢️☢️floating box */
+/* Floating bottom box */
+.floating-box {
+  position: fixed;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #351757;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: flex;
+  gap: 15px;               /* space between icons */
+  padding: 0 15px;          /* horizontal padding only */
+  height: 50px;             /* 👈 fixed height */
+  z-index: 1100;
+  align-items: center;      /* center items vertically */
+  width: auto;              /* 👈 width adjusts automatically */
+}
+
+/* Icon container */
+.floating-box span {
+  cursor: pointer;
+  display: flex;             /* centers SVG inside */
+  justify-content: center;
+  align-items: center;
+  width: 36px;               /* circle size slightly smaller than box height */
+  height: 36px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  color: white;              /* default icon color */
+}
+
+/* SVG size */
+.floating-box span svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;        /* inherits color */
+}
+
+/* Active icon (highlighted circle) */
+.floating-box span.active {
+  background: #4E2778;
+  color: white;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}
+
+/*😅😅😅😅Class 11 */
+    h1 {
+      font-size: 20px;        /* Control font size */
+      color: #000000;         /* Heading color */
+      margin-left: 0;      /* 15px from left */
+      padding-left: 10px;     /* Space between line & text */
+      border-left: 5px solid red; /* Big red line */
+    }
+    header .menu-icon {
+      cursor: pointer;
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    
+  </style>
+</head>
+<body>
+ 
+<header> 
+  <div class="head-menu-sitename" onclick="toggleMenu()">
+    <div class="head-classicon">
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4"/>
+      </svg>
+    </div>
+    <div class="site-name"> <span style="color:#EE82EE;">Ezee</span>&nbsp;Notes </div>
+  </div>
+  <div style="display:flex; justify-content:center; align-items:center; height:100%; width:100%;">
+  <div id="typingText" style="font-size:18px; font-weight:bold; color:white; white-space:nowrap; overflow:hidden;"></div></div>
+   </header>
+
+  
+<!-- Side Menu -->
+<div class="side-menu" id="sideMenu">
+  <h2>Select a class</h2>
+  <a href="#" class="menu-option">
+    <div class="menu-title">Class 11 - Science</div>
+    <div class="menu-subtitle">Boards + Competitive Exams</div>
+  </a>
+  <a href="#" class="menu-option">
+    <div class="menu-title">Class 12 - Science</div>
+    <div class="menu-subtitle">Boards + Competitive Exams</div>
+  </a>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Home sections -->
+    <section id="class11" class="content-section active">
+      <h1>Ezee Notes (Class 11)</h1>
+      <div class="subjecThumbnail">
+        <!-- physics -->
+        <div class="cover-card loading_card p_n11" id="card1">
+          <div class="second-shadow"></div>
+          <div class="third-shadow"></div>
+          <div class="title">Ezee Notes</div>
+          <img class="cover-image"
+               src="https://ayush348rtg.github.io/doc/tele/source/cover/physicss-N-covr-11.png"
+               alt="Cover Image">
+          <div class="subject">Physics</div>
+        </div>
+        <!-- Chemistry -->
+        <div class="cover-card loading_card c_n11" id="card1">
+          <div class="second-shadow"></div>
+          <div class="third-shadow"></div>
+          <div class="title">Ezee Notes</div>
+          <img class="cover-image"
+               src="https://ayush348rtg.github.io/doc/tele/source/cover/biology-N-covr-11.png"
+               alt="Cover Image">
+          <div class="subject">Chemistry</div>
+        </div>
+        <!-- Bio -->
+        <div class="cover-card loading_card b_n11" id="card1">
+          <div class="second-shadow"></div>
+          <div class="third-shadow"></div>
+          <div class="title">Ezee Notes</div>
+          <img class="cover-image"
+               src="https://ayush348rtg.github.io/doc/tele/source/cover/chemistry-N-covr-11.png"
+               alt="Cover Image">
+          <div class="subject">Biology</div>
+        </div>
+      </div>
+  
+      <h1>Formula Sheets (Class 11)</h1>
+     <div class="subjecThumbnail">
+  <!-- physics -->
+  <div class="formulaCover-card loading_card p_f11" id="card1">
+      <div class="second-shadow"></div>
+      <div class="third-shadow"></div>
+      <div class="title">physics</div>
+      <img class="cover-image"
+           src="https://ayush348rtg.github.io/doc/tele/source/cover/physicss-F-covr-11.png"
+           alt="Cover Image">
+      <div class="formulasheet_text">Formula Sheets</div>
+    </div>
+  <!-- Chemistry -->
+    <div class="formulaCover-card loading_card c_f11" id="card1">
+      <div class="second-shadow"></div>
+      <div class="third-shadow"></div>
+      <div class="title">Chemistry</div>
+      <img class="cover-image"
+           src="https://ayush348rtg.github.io/doc/tele/source/cover/chemistry-F-covr-11.png"
+           alt="Cover Image">
+      <div class="formulasheet_text">Formula Sheets</div>
+    </div>
+</div>
+
+    </section>
+
+ <!-- 〽️〽️Class 12 content〽️〽️  -->
+    <section id="class12" class="content-section">
+      <h2>Class 12</h2>
+      <p>Welcome to Class 12. This section covers advanced topics preparing you for boards and entrance exams.</p>
+    </section>
+
+    <!-- Practice Paper -->
+    <section id="practice" class="content-section">
+      <h2>Practice Papers</h2>
+      <p>Here you can access a variety of practice papers designed to strengthen your preparation. 
+         Solve timed tests, review solutions, and track your progress to get exam-ready.</p>
+    </section>
+
+    <!-- Student Info -->
+    <section id="student" class="content-section">
+      <h2>Student Information</h2>
+      <p>This section contains student details such as name, roll number, subjects enrolled, and performance summary. 
+         Keeping this updated helps track academic growth and achievements.</p>
+    </section>
+    
+    <section id="note11p" class="content-section">
+      hay
+    </section>
+  </main>
+
+  <!-- Floating Bottom Box -->
+  <div class="floating-box">
+  
+  <span id="homeIcon" class="active" onclick="showHome()">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25"><path d="M23 9.99V22a2.006 2.006 0 0 1-2 2h-6v-8h-5v8H4a2.006 2.006 0 0 1-2-2V9.99a1.999 1.999 0 0 1 .79-1.59L12.5 1l9.71 7.4A1.999 1.999 0 0 1 23 9.99z" style="fill:#FFFFFF"/></svg>
+  </span>
+
+<span id="practiceIcon" onclick="showPractice()">
+    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill=#FFFFFF viewBox="0 0 24 24">
+  <path fill-rule="evenodd" d="M11 4.717c-2.286-.58-4.16-.756-7.045-.71A1.99 1.99 0 0 0 2 6v11c0 1.133.934 2.022 2.044 2.007 2.759-.038 4.5.16 6.956.791V4.717Zm2 15.081c2.456-.631 4.198-.829 6.956-.791A2.013 2.013 0 0 0 22 16.999V6a1.99 1.99 0 0 0-1.955-1.993c-2.885-.046-4.76.13-7.045.71v15.081Z" clip-rule="evenodd"/>
+</svg></span>
+
+<span id="studentIcon" onclick="showStudentInfo()">
+    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill=#FFFFFF viewBox="0 0 24 24">
+  <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+</svg></span>
+</div>
+
+
+  <script>
+  //control cover loading
+  
+// Simulate loading delay
+setTimeout(() => {
+  document.querySelectorAll(".cover-card").forEach(card => {
+    card.classList.remove("loading_card");
+    card.classList.add("show_card");
+  });
+}, 1000);
+setTimeout(() => {
+  document.querySelectorAll(".formulaCover-card").forEach(card => {
+    card.classList.remove("loading_card");
+    card.classList.add("show_formulacard");
+  });
+}, 1000);
+  //🙂typingText🙂
+  const messages = ["You are welcome", "Happy journey"];
+  let messageIndex = 0;
+  let charIndex = 0;
+  let typing = true;
+  const typingElement = document.getElementById("typingText");
+
+  function typeAnimation() {
+    const currentMessage = messages[messageIndex];
+
+    if (typing) {
+        // Typing forward
+        if (charIndex < currentMessage.length) {
+            typingElement.textContent += currentMessage.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeAnimation, 120);
+        } else {
+            typing = false;
+            setTimeout(typeAnimation, 1000); // Pause before deleting
+        }
+    } else {
+        // Deleting backward
+        if (charIndex > 0) {
+            typingElement.textContent = currentMessage.substring(0, charIndex - 1);
+            charIndex--;
+            setTimeout(typeAnimation, 60);
+        } else {
+            typing = true;
+            messageIndex = (messageIndex + 1) % messages.length; // Switch message
+            setTimeout(typeAnimation, 500); // Pause before typing next
+        }
+    }
+  }
+
+        typeAnimation();
+  //🙂typingText🙂✅️
+    
+
+
+    function showPractice() {
+      document.querySelectorAll(".content-section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById("practice").classList.add("active");
+      setActiveIcon("practiceIcon");
+    }
+
+    function showStudentInfo() {
+      document.querySelectorAll(".content-section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById("student").classList.add("active");
+      setActiveIcon("studentIcon");
+    }
+
+    function setActiveIcon(iconId) {
+      document.querySelectorAll(".floating-box span").forEach(icon => icon.classList.remove("active"));
+      document.getElementById(iconId).classList.add("active");
+    }
+
+    // On load: highlight Class 11 and Home
+    window.onload = () => {
+      document.getElementById("link-class11").classList.add("active");
+      setActiveIcon("homeIcon");
+    };
+  </script>
+</body>
+  </html>
