@@ -1,0 +1,63 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
+  gap: 20px;
+  justify-content: center; /* keeps boxes centered if row not full */
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  margin: 0;
+  padding: 20px;
+}
+.chapter-box {
+  display: inline-block;
+  background: #fff;
+  border-radius: 6px;
+  padding: 12px;
+  /* only shadow, no border */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.chapter-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+.chapter-index {
+  font-size: 15px;
+  color: #0077cc;
+  margin-bottom: 6px;
+  font-family: Poppins, sans-serif;
+}
+.chapter-name {
+  font-family: Poppins, sans-serif;
+  font-size: 17px;          /* bigger than index */
+  font-weight: bold;        /* bold text */
+  color: #333;
+  position: relative;
+  padding-left: 10px;       /* space for red line */
+}
+.chapter-name::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: red; /* red line */
+}
+.sub_from {
+  display: flex;
+  justify-content: center;
+  background-color: #f4f6f9;
+  padding: 0;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+}
+.sub_from_text {
+  display: inline-block;/* makes box wrap around its content */
+  background: #3498db;
+  color: white;
+  padding: 5px 20px;                  /* space inside the box */
+  border-radius: 60px;
+  font-family: Poppins, sans-serif;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}

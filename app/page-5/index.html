@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ezee Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="menu_style.css">
+    <script src="side_menu.js" defer></script>
+    <link rel="stylesheet" href="studentinfo_style.css">
+    <script src="studentinfo.js" defer></script>
+    <link rel="stylesheet" href="chapterName.css">
+    <script src="chapterName.js" defer></script>
+
+    <base href="https://ayush348rtg.github.io/e/">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background: #351757;  /* same purple background */
+      color: white;
+      height: 200px;        /* fixed header height */
+      position: relative;   /* allows child elements to be positioned freely */
+    }
+    .head-menu-sitename {
+      position: absolute;   /* now you can place it anywhere */
+      top: 10px;            /* distance from top of header */
+      left: 10px;           /* distance from left of header */
+      display: flex;
+      gap: 7px;            /* space between icon and site name */
+      align-items: center;  /* vertically align icon + text */
+    }
+    .head-classicon {
+      background-color: #4E2778;
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .site-name {
+      color: white;
+      background-color: #4E2778;
+      border-radius: 25px;   /* half of height → pill shape */
+      height: 40px;          /* fixed height */
+      padding: 0 20px;       /* horizontal padding for spacing, top/bottom padding is 0 */
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;    /* vertically center text */
+      white-space: nowrap;    /* prevent text from wrapping */
+    }
+    
+    main {
+      padding: 10px;
+      background-color: white;
+      font-family: Arial, sans-serif;
+      min-height: 100vh; /* 100% of the viewport height */
+    }
+
+/*☢️☢️☢️floating box */
+/* Floating bottom box */
+.floating-box {
+  position: fixed;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #351757;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: flex;
+  gap: 15px;               /* space between icons */
+  padding: 0 15px;          /* horizontal padding only */
+  height: 50px;             /* 👈 fixed height */
+  z-index: 1100;
+  align-items: center;      /* center items vertically */
+  width: auto;              /* 👈 width adjusts automatically */
+}
+
+/* Icon container */
+.floating-box span {
+  cursor: pointer;
+  display: flex;             /* centers SVG inside */
+  justify-content: center;
+  align-items: center;
+  width: 36px;               /* circle size slightly smaller than box height */
+  height: 36px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  color: white;              /* default icon color */
+}
+
+/* SVG size */
+.floating-box span svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;        /* inherits color */
+}
+
+/* Active icon (highlighted circle) */
+.floating-box span.active {
+  background: #4E2778;
+  border: 2px solid #EE82EE;
+  color: white;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}
+.coming_soon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: red;
+  font-size: 80%;
+  margin-top: 20%;
+}
+/*😅😅😅😅Class 11 */
+    h1 {
+      font-size: 20px;        /* Control font size */
+      color: #000000;         /* Heading color */
+      margin-left: 0;      /* 15px from left */
+      padding-left: 10px;     /* Space between line & text */
+      border-left: 5px solid red; /* Big red line */
+    }
+    header .menu-icon {
+      cursor: pointer;
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    
+  </style>
+</head>
+<body>
+ 
+<header> 
+  <div class="head-menu-sitename" onclick="toggleMenu()">
+    <div class="head-classicon">
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4"/>
+      </svg>
+    </div>
+    <div class="site-name"> <span style="color:#EE82EE;">Ezee</span>&nbsp;Notes </div>
+  </div>
+  <div style="display:flex; justify-content:center; align-items:center; height:100%; width:100%;">
+  <div id="typingText" style="font-size:18px; font-weight:bold; color:white; white-space:nowrap; overflow:hidden;"></div></div>
+   </header>
+
+  
+<!-- Side Menu -->
+<div class="side-menu" id="sideMenu">
+  <h2>Select a class</h2>
+  <a href="#" class="menu-option">
+    <div class="menu-title">Class 11 - Science</div>
+    <div class="menu-subtitle">Boards + Competitive Exams</div>
+  </a>
+  <a href="#" class="menu-option">
+    <div class="menu-title">Class 12 - Science</div>
+    <div class="menu-subtitle">Boards + Competitive Exams</div>
+  </a>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Home sections -->
+    <section id="class11" class="content-section active">
+      <h1>Ezee Notes (Class 11)</h1>
+      <div class="subjecThumbnail">
+        <!-- physics -->
+        <div class="cover-card loading_card p_n11" id="card1" onclick="name_p_n_11()">
+          <div class="second-shadow"></div>
+          <div class="third-shadow"></div>
+          <div class="title">Ezee Notes</div>
+          <img class="cover-image"
+               src="https://ayush348rtg.github.io/doc/tele/source/cover/physicss-N-covr-11.png"
+               alt="Cover Image">
+          <div class="subject">Physics</div>
+        </div>
+        <!-- Chemistry -->
+        <div class="cover-card loading_card c_n11" id="card1">
+          <div class="second-shadow"></div>
+          <div class="third-shadow"></div>
+          <div class="title">Ezee Notes</div>
+          <img class="cover-image"
+               src="https://ayush348rtg.github.io/doc/tele/source/cover/biology-N-covr-11.png"
+               alt="Cover Image">
+          <div class="subject">Chemistry</div>
+        </div>
+        <!-- Bio -->
+        <div class="cover-card loading_card b_n11" id="card1">
+          <div class="second-shadow"></div>
+          <div class="third-shadow"></div>
+          <div class="title">Ezee Notes</div>
+          <img class="cover-image"
+               src="https://ayush348rtg.github.io/doc/tele/source/cover/chemistry-N-covr-11.png"
+               alt="Cover Image">
+          <div class="subject">Biology</div>
+        </div>
+      </div>
+  
+      <h1>Formula Sheets (Class 11)</h1>
+     <div class="subjecThumbnail">
+  <!-- physics -->
+  <div class="formulaCover-card loading_card p_f11" id="card1">
+      <div class="second-shadow"></div>
+      <div class="third-shadow"></div>
+      <div class="title">physics</div>
+      <img class="cover-image"
+           src="https://ayush348rtg.github.io/doc/tele/source/cover/physicss-F-covr-11.png"
+           alt="Cover Image">
+      <div class="formulasheet_text">Formula Sheets</div>
+    </div>
+  <!-- Chemistry -->
+    <div class="formulaCover-card loading_card c_f11" id="card1">
+      <div class="second-shadow"></div>
+      <div class="third-shadow"></div>
+      <div class="title">Chemistry</div>
+      <img class="cover-image"
+           src="https://ayush348rtg.github.io/doc/tele/source/cover/chemistry-F-covr-11.png"
+           alt="Cover Image">
+      <div class="formulasheet_text">Formula Sheets</div>
+    </div>
+</div>
+
+    </section>
+
+ <!-- 〽️〽️Class 12 content〽️〽️  -->
+    <section id="class12" class="content-section">
+      <h2>Class 12</h2>
+      <p>Welcome to Class 12. This section covers advanced topics preparing you for boards and entrance exams.</p>
+    </section>
+
+    <!-- Practice Paper -->
+    <section id="practice" class="content-section">
+      <div class="coming_soon">
+        <h2>Coming soon...</h2>
+      </div>
+    </section>
+
+
+<section id="class11_physics_chap" class="content-section">
+  <div class="sub_from">
+    <div class="sub_from_text">
+      Physics Notes (Class 11)
+    </div>
+  </div>
+    <div class="container">
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 1</div>
+    <div class="chapter-name">Physical World</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 2</div>
+    <div class="chapter-name">Units and Measurements</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 3</div>
+    <div class="chapter-name">Motion in a Straight Line</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 4</div>
+    <div class="chapter-name">Motion in a Plane</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 5</div>
+    <div class="chapter-name">Laws of Motion</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 6</div>
+    <div class="chapter-name">Work, Energy and Power</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 7</div>
+    <div class="chapter-name">System of Particles and Rotational Motion</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 8</div>
+    <div class="chapter-name">Gravitation</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 9</div>
+    <div class="chapter-name">Mechanical Properties of Solids</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 10</div>
+    <div class="chapter-name">Mechanical Properties of Fluids</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 11</div>
+    <div class="chapter-name">Thermal Properties of Matter</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 12</div>
+    <div class="chapter-name">Thermodynamics</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 13</div>
+    <div class="chapter-name">Kinetic Theory</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 14</div>
+    <div class="chapter-name">Oscillations</div>
+  </div>
+  <div class="chapter-box">
+    <div class="chapter-index">Chapter 15</div>
+    <div class="chapter-name">Waves</div>
+  </div>
+</div>
+</section>
+
+
+
+    <!-- Student Info -->
+    <section id="student" class="content-section">
+      <div class="profile_container">
+        <!-- Card Container -->
+    <div class="card">
+        
+  <!-- Header Section -->
+  <div class="header">
+      <div class="profile-group">
+          <!-- Avatar with Ring and Status -->
+          <div class="avatar-container">
+              <!-- Using an avatar placeholder image -->
+              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Atysh&gender=male" 
+                   alt="Profile" 
+                   class="avatar-image">
+              <!-- Green Status Dot -->
+              <div class="status-dot"></div>
+          </div>
+
+          <!-- Text Info -->
+          <div class="info-text">
+              <h2 id="profileName">Loading...</h2>
+              <span id="profileClass">Loading...</span>
+          </div>
+      </div>
+
+      <!-- Menu Emoji -->
+      <button class="menu-btn">
+          ⋮
+      </button>
+  </div>
+
+<!-- Divider / Action Section -->
+<div class="action-area">
+    <!-- Toggle Button -->
+    <button id="toggleBtn" onclick="toggleContact()" class="toggle-btn">
+        <span>Get In Touch with Us</span>
+        <!-- Arrow Emoji -->
+        <span id="arrowIcon" class="arrow-icon">▲</span>
+    </button>
+</div>
+
+<!-- Social Icons Footer -->
+  <div id="socialContainer" class="social-icons-container">
+      <div class="social-icons-list">
+          
+<!-- Instagram (Camera Emoji) -->
+<a href="#" class="icon-link">
+  <span>
+    <svg xmlns="http://www.w3.org/2000/svg" id="gmail" enable-background="new 0 0 141.7 141.7" viewBox="0 0 141.7 141.7">
+    <path fill="#4285f4" d="M24.3,111.3h17.2V69.6L16.9,51.3V104C16.9,108,20.2,111.3,24.3,111.3z"></path>
+    <path fill="#34a853" d="M100.3,111.3h17.2c4.1,0,7.4-3.3,7.4-7.4V51.3l-24.5,18.4V111.3z"></path>
+    <path fill="#fbbc04" d="M100.3,37.8v31.9l24.5-18.4v-9.8c0-9.1-10.4-14.3-17.7-8.8L100.3,37.8z"></path>
+    <path fill="#ea4335" fill-rule="evenodd" d="M41.4,69.6V37.8l29.4,22.1l29.4-22.1v31.9L70.9,91.7L41.4,69.6z" clip-rule="evenodd"></path>
+    <path fill="#c5221f" d="M16.9,41.4v9.8l24.5,18.4V37.8l-6.9-5.2C27.3,27.2,16.9,32.4,16.9,41.4z"></path>
+  </svg>
+  </span>
+</a>
+
+
+<!-- Website (Globe Emoji) -->
+<a href="#" class="icon-link">
+    <span>
+    <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 100 100" viewBox="0 0 100 100" id="telegram">
+  <path id="Layer_2" fill="#1b92d1" d="M88.723,12.142C76.419,17.238,23.661,39.091,9.084,45.047c-9.776,3.815-4.053,7.392-4.053,7.392
+			s8.345,2.861,15.499,5.007c7.153,2.146,10.968-0.238,10.968-0.238l33.62-22.652c11.922-8.107,9.061-1.431,6.199,1.431
+			c-6.199,6.2-16.452,15.975-25.036,23.844c-3.815,3.338-1.908,6.199-0.238,7.63c6.199,5.246,23.129,15.976,24.082,16.691
+			c5.037,3.566,14.945,8.699,16.452-2.146c0,0,5.961-37.435,5.961-37.435c1.908-12.637,3.815-24.321,4.053-27.659
+			C97.307,8.804,88.723,12.142,88.723,12.142z"></path>
+</svg>
+</span>
+</a>
+
+      </div>
+  </div>
+
+    </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Bottom Box -->
+  <div class="floating-box">
+  
+  <span id="homeIcon" class="active" onclick="showHome()">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25"><path d="M23 9.99V22a2.006 2.006 0 0 1-2 2h-6v-8h-5v8H4a2.006 2.006 0 0 1-2-2V9.99a1.999 1.999 0 0 1 .79-1.59L12.5 1l9.71 7.4A1.999 1.999 0 0 1 23 9.99z" style="fill:#FFFFFF"/></svg>
+  </span>
+
+<span id="practiceIcon" onclick="showPractice()">
+    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill=#FFFFFF viewBox="0 0 24 24">
+  <path fill-rule="evenodd" d="M11 4.717c-2.286-.58-4.16-.756-7.045-.71A1.99 1.99 0 0 0 2 6v11c0 1.133.934 2.022 2.044 2.007 2.759-.038 4.5.16 6.956.791V4.717Zm2 15.081c2.456-.631 4.198-.829 6.956-.791A2.013 2.013 0 0 0 22 16.999V6a1.99 1.99 0 0 0-1.955-1.993c-2.885-.046-4.76.13-7.045.71v15.081Z" clip-rule="evenodd"/>
+</svg></span>
+
+<span id="studentIcon" onclick="showStudentInfo()">
+    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill=#FFFFFF viewBox="0 0 24 24">
+  <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+</svg></span>
+</div>
+
+
+  <script>
+  //control cover loading
+  
+// Simulate loading delay
+setTimeout(() => {
+  document.querySelectorAll(".cover-card").forEach(card => {
+    card.classList.remove("loading_card");
+    card.classList.add("show_card");
+  });
+}, 1000);
+setTimeout(() => {
+  document.querySelectorAll(".formulaCover-card").forEach(card => {
+    card.classList.remove("loading_card");
+    card.classList.add("show_formulacard");
+  });
+}, 1000);
+  //🙂typingText🙂
+  const messages = ["You are welcome", "Happy journey"];
+  let messageIndex = 0;
+  let charIndex = 0;
+  let typing = true;
+  const typingElement = document.getElementById("typingText");
+
+  function typeAnimation() {
+    const currentMessage = messages[messageIndex];
+
+    if (typing) {
+        // Typing forward
+        if (charIndex < currentMessage.length) {
+            typingElement.textContent += currentMessage.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeAnimation, 120);
+        } else {
+            typing = false;
+            setTimeout(typeAnimation, 1000); // Pause before deleting
+        }
+    } else {
+        // Deleting backward
+        if (charIndex > 0) {
+            typingElement.textContent = currentMessage.substring(0, charIndex - 1);
+            charIndex--;
+            setTimeout(typeAnimation, 60);
+        } else {
+            typing = true;
+            messageIndex = (messageIndex + 1) % messages.length; // Switch message
+            setTimeout(typeAnimation, 500); // Pause before typing next
+        }
+    }
+  }
+
+        typeAnimation();
+  //🙂typingText🙂✅
+function showHome() {
+  document.querySelectorAll(".content-section").forEach(sec => sec.classList.remove("active"));
+  document.getElementById("class11").classList.add("active");
+  setActiveIcon("homeIcon");
+}
+    function showPractice() {
+      document.querySelectorAll(".content-section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById("practice").classList.add("active");
+      setActiveIcon("practiceIcon");
+    }
+
+    function showStudentInfo() {
+      document.querySelectorAll(".content-section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById("student").classList.add("active");
+      setActiveIcon("studentIcon");
+    }
+
+    function setActiveIcon(iconId) {
+      document.querySelectorAll(".floating-box span").forEach(icon => icon.classList.remove("active"));
+      document.getElementById(iconId).classList.add("active");
+    }
+
+    // On load: highlight Class 11 and Home
+    window.onload = () => {
+      document.getElementById("link-class11").classList.add("active");
+      setActiveIcon("studentIcon");
+    };
+  </script>
+</body>
+  </html>
