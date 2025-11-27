@@ -1,0 +1,140 @@
+/* Thumbnail strip */
+    .subjecThumbnail {
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 0;
+      margin-left: 0;
+      gap: 10px;
+      min-height: 185px;
+      background-color: white;
+    }
+
+    .cover-card {
+      --main-color: yellow;
+      flex: 0 0 auto;
+      width: 110px;
+      height: 150px;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+      font-family: "Poppins", sans-serif;
+    }
+    .formulaCover-card {
+      --main-color: skyblue;
+      flex: 0 0 auto;
+      width: 110px;
+      height: 150px;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Loading shimmer */
+    .loading_card {
+      background: #ddd;
+      position: relative;
+    }
+    .loading_card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Show state */
+    .show_card {
+      background: linear-gradient(160deg, var(--main-color) 45%, white 40%);
+    }
+    .show_formulacard {
+  background: linear-gradient(180deg, var(--main-color) 40%, white 40%);
+}
+
+    .title {
+      position: absolute;
+      top: 12px;
+      left: 2%;
+      width: 100%;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      display: none;
+    }
+    .subject {
+      position: absolute;
+      bottom: 15px;
+      width: 100%;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--main-color);
+      display: none;
+    }
+    .formulasheet_text {
+  position: absolute;
+  bottom: 15px;
+  left: 4%;
+  width: 100%;
+  text-align: center;
+  font-size: 13 px;
+  font-weight: 500;
+  color: var(--main-color);
+  display: none;
+}
+    .cover-image {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 60px;
+      max-height: 60px;
+      display: none;
+    }
+
+    /* Shadows hidden until show_card */
+    .second-shadow,
+    .third-shadow {
+      display: none;
+      position: absolute;
+      top: 0;
+      height: 100%;
+      pointer-events: none;
+    }
+    .second-shadow {
+      left: 6px;
+      transform: translateX(-50%);
+      width: 8px;
+      background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.2), rgba(0,0,0,0));
+    }
+    .third-shadow {
+      left: 9px;
+      transform: translateX(-50%);
+      width: 5px;
+      background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.2), rgba(255,255,255,0));
+    }
+
+    /* Reveal content + shadows when show_card is active */
+    .show_card .title,
+    .show_card .subject,
+    .show_card .cover-image,
+    .show_card .second-shadow,
+    .show_card .third-shadow {
+      display: block;
+    }
+    .show_formulacard .title,
+    .show_formulacard .formulasheet_text,
+    .show_formulacard .cover-image,
+    .show_formulacard .second-shadow,
+    .show_formulacard .third-shadow {
+      display: block;
+    }
+    .p_n11  { --main-color: #5195d6; }
+    .c_n11 { --main-color: #8b6be8; }
+    .b_n11{ --main-color: #4abf6e; }
+    .p_f11  { --main-color: #643a94; }
+    .c_f11  { --main-color: #319377; }
