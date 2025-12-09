@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+  <title>EzeeMe Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Stack+Sans+Notch:wght@200..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #eeeeee;
+      color: #333;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    header {
+      background-color: #351757;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+    .weblogo {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      background-color: #4E277A;
+      padding: 8px 16px;
+      border-radius: 60px;
+      display: inline-block;
+      margin-left: 7px;
+    }
+
+    main {
+      height: auto;
+      padding-top: 65px;
+      margin-bottom: 3%;
+    }
+
+    .imagecontainer {
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .imagecontainer img {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+    .page { position: relative;
+    }
+    .watermark-bottom {
+      position: absolute;
+      bottom: 2%;
+      right: 2%;
+      color: #f2ba49;
+      opacity: 0.50;
+      letter-spacing: 2px;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      font-family: "Stack Sans Notch", sans-serif;
+      font-weight: 700;
+    }
+    .watermark-left-center {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #b0bec5;
+      opacity: 0.60;
+      letter-spacing: 2px;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      animation: floatY 4s ease-in-out infinite;
+      font-family: "Stack Sans Notch", sans-serif;
+    }
+    @keyframes floatY {
+      0%, 100% { transform: translateY(-50%);
+      }
+      50% { transform: translateY(calc(-50% - 1cm));
+      }
+    }
+    .watermark-vertical-third {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      color: #888;
+      opacity: 0.5;
+      letter-spacing: 2px;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      z-index: 2000;
+      font-family: "Stack Sans Notch", sans-serif;
+      font-weight: 700;
+      display: block;
+    }
+    .width-control {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      padding-right: 15px;
+    }
+    #widthRange { margin-left: 8px;
+    }
+    .watermark-not-found {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: red;
+      transform: translateY(-50%) rotate(0deg);
+      letter-spacing: 3px;
+      z-index: 2000;
+      font-family: "Stack Sans Notch", sans-serif;
+      font-weight: 700;
+      margin-top: 30vh;
+    }
+    .watermark-bottom,
+    .watermark-left-center,
+    .watermark-not-found,
+    .watermark-vertical-third {
+      transition: font-size 0.3s ease;
+    }
+    .space_box{
+      height: 10px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .spinner {
+      margin: 30px auto;
+      width: 5vw;
+      height: 5vw;
+      border: 2vw solid #e0e0e0;
+      border-top: 2vw solid #351757; 
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: none;}
+    @keyframes spin {
+      0% { transform: rotate(0deg);
+      }
+      100% { transform: rotate(360deg);
+      }
+    }
+    @media (orientation: portrait) {
+      .imagecontainer { width: 90%;
+      }
+      .space_box { width: 90%;
+      }
+    }
+    @media (orientation: landscape) {
+      .imagecontainer { width: 60%;
+      }
+      .space_box { width: 60%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="weblogo">
+      <span style="color:#A47AD0;">@EzeeMe</span><span style="color:white;">Bot</span>
+    </div>
+    <div class="width-control">
+      <label for="widthRange" style="color:white; margin-left:15px;"></label>
+      <input type="range" id="widthRange">
+      <span id="widthValue" style="color:white; margin-left:8px;"></span>
+    </div>
+  </header>
+<main>
+  <div class="space_box"></div>
+  <div id="notfound_container"></div>
+  <div class="imagecontainer" id="images"></div>
+  <div class="spinner" id="loadingSpinner"></div>
+  <div class="watermark-vertical-third" id="fixedWatermark">EzeeMeBot</div>
+</main>
+<script>
+    function 
+    decodeUrl(arr) {
+      return String.fromCharCode(...arr.map(c => c - 3));
+    }
+    const chapters = {}
+    function hexToString(hex) {
+      let str = '';
+      for (let i = 0; i < hex.length; i += 2) {
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+      }
+      return str;
+    }
+const wM_not_found = document.getElementById('wM_not_found');
+const whereis = new URLSearchParams(window.location.search);
+const incriptedata = whereis.get("inc");
+let chapter = 'chapter0';
+if (incriptedata) {
+  try { chapter = hexToString(incriptedata); }
+  catch(e) { console.error("Error 101!");
+  }
+}
+const container = document.getElementById('images');
+const spinner = document.getElementById('loadingSpinner');
+const chapterData = chapters[chapter] || [];
+let loadedCount = 0;
+const BATCH_SIZE = 5;
+if (Array.isArray(chapterData) && chapterData.length === 0) {
+  const not_found_box = document.createElement("div");
+  not_found_box.className = "watermark-not-found";
+  not_found_box.textContent = "Error 100!";
+  document.getElementById("notfound_container").appendChild(not_found_box);
+  document.addEventListener("DOMContentLoaded", () => {
+  const wm = document.getElementById("fixedWatermark");
+  if (wm) {
+    wm.style.display = "none";
+  }});
+}
+const cleanupObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const page = entry.target;
+    const img = page.querySelector('img');
+    if (!img) return;
+    if (entry.isIntersecting) {
+      if (!img.getAttribute('src')) {
+        img.src = img.dataset.src;
+             page.style.height = 'auto';
+      }
+    } else {
+      if (img.getAttribute('src')) {
+        page.style.height = page.offsetHeight + 'px';
+        img.removeAttribute('src');
+      }
+    }
+  });
+}, 
+{
+  rootMargin: '200% 0px 200% 0px'
+});
+const infiniteScrollObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    loadNextBatch();
+  }
+}, { rootMargin: '200px' });
+function createPageElement(encodedArr) {
+  const url = decodeUrl(encodedArr);
+  const page = document.createElement('div');
+  page.className = 'page';
+  const img = document.createElement('img');
+  img.dataset.src = url;
+  img.src = url;
+  img.alt = "EzeeMe Page";
+  const watermarkBottom = document.createElement('div');
+  watermarkBottom.className = 'watermark-bottom';
+  watermarkBottom.textContent = 'EzeeMeBot';
+  const watermarkLeftCenter = document.createElement('div');
+  watermarkLeftCenter.className = 'watermark-left-center';
+  watermarkLeftCenter.textContent = 'EzeeMeBot';
+  page.appendChild(img);
+  page.appendChild(watermarkBottom);
+  page.appendChild(watermarkLeftCenter);
+  cleanupObserver.observe(page);
+  return page;
+}
+function loadNextBatch() {
+  if (loadedCount >= chapterData.length) {
+    spinner.style.display = 'none';
+    infiniteScrollObserver.unobserve(spinner);
+    return;
+  }
+  spinner.style.display = 'block';
+  setTimeout(() => {
+    const nextBatch = chapterData.slice(loadedCount, loadedCount + BATCH_SIZE);
+    nextBatch.forEach(encodedArr => {
+      const page = createPageElement(encodedArr);
+      container.appendChild(page);
+    });
+    loadedCount += nextBatch.length;
+    resizeWatermarks();
+    if (loadedCount >= chapterData.length) {
+      spinner.style.display = 'none';
+    }
+  }, 50);
+}
+if (chapterData.length > 0) {
+  loadNextBatch();
+  infiniteScrollObserver.observe(spinner);
+} else {
+    spinner.style.display = 'none';
+}
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('dragstart', event => event.preventDefault());
+function resizeWatermarks() {
+      const container = document.querySelector('.space_box');
+      if (!container) return;
+      const containerWidth = container.offsetWidth;
+      const fontSize = containerWidth * 0.05;
+      const fontSize2 = containerWidth * 0.03;
+      const nFound_font = containerWidth * 0.08;
+      document.querySelectorAll('.watermark-vertical-third').forEach(wm => {
+        wm.style.fontSize = fontSize + 'px';
+      });
+      document.querySelectorAll('.watermark-bottom').forEach(wm => {
+        wm.style.fontSize = fontSize2 + 'px';
+      });
+      document.querySelectorAll('.watermark-left-center').forEach(wm => {
+        wm.style.fontSize = fontSize2 + 'px';
+      });
+      document.querySelectorAll('.watermark-not-found').forEach(wm_notf => {
+        wm_notf.style.fontSize = nFound_font + 'px';
+      });
+    }
+    function positionVerticalWatermark() {
+      const container = document.querySelector('.space_box');
+      const wm = document.getElementById('fixedWatermark');
+      const wm_notf = document.getElementById('wM_not_found');
+      if (!container || !wm) return;
+      const rect = container.getBoundingClientRect();
+      const leftPos = rect.left + rect.width * 0.67;
+      const leftPoss = rect.left + rect.width * 0.5;
+      wm.style.left = leftPos + 'px';
+
+    }
+    const widthRange = document.getElementById('widthRange');
+    const widthValue = document.getElementById('widthValue');
+    const imageContainer = document.querySelector('.imagecontainer');
+    const limits = {
+      portrait:  { min: 80, max: 95, def: 90 },
+      landscape: { min: 55, max: 95, def: 65 }
+    };
+    function getOrientation() {
+      const so = (screen.orientation && screen.orientation.type) ||
+      screen.msOrientation || screen.mozOrientation || screen.webkitOrientation;
+      if (typeof so === 'string') {
+        return so.includes('portrait') ?
+        'portrait' : 'landscape';
+      }
+      return window.innerHeight >= window.innerWidth ?
+      'portrait' : 'landscape';
+    }
+    let currentOrientation = getOrientation();
+    function applyWidth() {
+      const val = Number(widthRange.value);
+      if (Number.isNaN(val)) return;
+      imageContainer.style.width = val + '%';
+      document.querySelector('.space_box').style.width = val + '%';
+      widthValue.textContent = val + '%';
+      resizeWatermarks();
+      positionVerticalWatermark();
+    }
+    function setRangeLimitsAndDefault(mode, { forceDefault = false } = {}) {
+      const { min, max, def } = limits[mode];
+      widthRange.min = String(min);
+      widthRange.max = String(max);
+      const current = Number(widthRange.value);
+      let nextVal;
+      if (forceDefault || Number.isNaN(current) || widthRange.value === '') {
+        nextVal = def;
+      } else {
+        nextVal = Math.min(max, Math.max(min, current));
+      }
+      widthRange.value = String(nextVal);
+      applyWidth();
+    }
+    let resizeTimer = null;
+    function onPossibleOrientationChange({ forceDefault = false } = {}) {
+      const newOrientation = getOrientation();
+      if (newOrientation !== currentOrientation) {
+        currentOrientation = newOrientation;
+        setRangeLimitsAndDefault(currentOrientation, { forceDefault });
+      }
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      currentOrientation = getOrientation();
+      setRangeLimitsAndDefault(currentOrientation, { forceDefault: true });
+      resizeWatermarks();
+      positionVerticalWatermark();
+    });
+    if (screen.orientation && typeof screen.orientation.addEventListener === 'function') {
+      screen.orientation.addEventListener('change', () => {
+        onPossibleOrientationChange({ forceDefault: true });
+      });
+    } else if (screen.orientation && 'onchange' in screen.orientation) {
+      screen.orientation.onchange = () => onPossibleOrientationChange({ forceDefault: true });
+    }
+    window.addEventListener('orientationchange', () => {
+      onPossibleOrientationChange({ forceDefault: true });
+    });
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => onPossibleOrientationChange({ forceDefault: true }), 120);
+      resizeWatermarks();
+      positionVerticalWatermark();
+    });
+    widthRange.addEventListener('input', applyWidth);
+</script>
+</body>
+</html>
