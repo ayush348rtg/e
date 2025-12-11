@@ -211,7 +211,9 @@ display: none;}
 function decodeUrl(arr) {
 return String.fromCharCode(...arr.map(c => c - 3));
 }
+  
 const chapters = {}
+  
 function hexToString(hex) {
 let str = '';
 for (let i = 0; i < hex.length; i += 2) {
@@ -242,7 +244,7 @@ const spinner = document.getElementById('loadingSpinner');
 const chapterData = chapters[chapter] || [];
 const totalImages = chapterData.length;
 let loadedCount = 0;
-const BATCH_SIZE = 1;
+const BATCH_SIZE = 5;
 if (Array.isArray(chapterData) && chapterData.length === 0) {
 const not_found_box = document.createElement("div");
 not_found_box.className = "watermark-not-found";
