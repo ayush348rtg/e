@@ -249,7 +249,7 @@ const spinner = document.getElementById('loadingSpinner');
 const chapterData = chapters[chapter] || []; /* [cite: 176] */
 const totalImages = chapterData.length;
     let loadedCount = 0;
-const BATCH_SIZE = 3; /* [cite: 177] */
+const BATCH_SIZE = 5; /* [cite: 177] */
 if (Array.isArray(chapterData) && chapterData.length === 0) {
   const not_found_box = document.createElement("div");
     not_found_box.className = "watermark-not-found"; /*  */
