@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=2.0, viewport-fit=cover">
+  <title>EzeeMe Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stack+Sans+Notch:wght@200..700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; /* [cite: 118] */
+      padding: 0;
+      background-color: #eeeeee;
+      color: #333;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      min-width: 400px;
+    }
+    header {
+      background-color: #351757;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start; /* [cite: 120] */
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+    .weblogo {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      background-color: #4E277A;
+      padding: 8px 16px; /* [cite: 122] */
+      border-radius: 60px;
+      display: inline-block;
+      margin-left: 7px;
+    }
+
+    main {
+      height: auto;
+      padding-top: 65px; /* [cite: 123] */
+      margin-bottom: 3%;
+    }
+
+    .imagecontainer {
+      margin: 0 auto;
+      position: relative; /* [cite: 124] */
+    }
+
+    .imagecontainer img {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0;
+      user-select: none; /* [cite: 125] */
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+
+    .page {
+      position: relative; /* [cite: 126] */
+      margin-bottom: 0;
+    }
+
+    .watermark-bottom {
+      position: absolute;
+      bottom: 2%;
+      right: 2%;
+      color: #f2ba49;
+      opacity: 0.50; /* [cite: 127] */
+      letter-spacing: 2px;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      font-family: "Stack Sans Notch", sans-serif;
+      font-weight: 700;
+    }
+
+    .watermark-left-center {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #b0bec5; /* [cite: 129] */
+      opacity: 0.60;
+      letter-spacing: 2px;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      animation: floatY 4s ease-in-out infinite;
+      font-family: "Stack Sans Notch", sans-serif; /* [cite: 130] */
+    }
+    
+.watermark-page-index { /* [cite: 130] <-- ADDED */
+  position: absolute;
+  bottom: 1%; /* [cite: 131] */
+  left: 10%; 
+  transform: translateX(-50%);
+  color: #351757;
+  opacity: 0.50;
+  pointer-events: none; /* [cite: 132] */
+  user-select: none;
+  white-space: nowrap;
+  font-family: "Stack Sans Notch", sans-serif;
+  font-weight: 700;
+  background-color: yellow; /* [cite: 133] */
+  padding: 0.5% 2%;
+  border: 2px solid #ccbc2f; /* [cite: 134] */
+  border-radius: 50px; /* Added rounded corners */
+  z-index: 500; /* [cite: 135] */
+}
+
+
+    @keyframes floatY {
+      0%, 100% { transform: translateY(-50%); /* [cite: 136] */
+      }
+      50% { transform: translateY(calc(-50% - 1cm)); /* [cite: 137] */
+      }
+    }
+
+    .watermark-vertical-third {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg); /* [cite: 138] */
+      color: #888;
+      opacity: 0.5;
+      letter-spacing: 2px;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      z-index: 2000;
+      font-family: "Stack Sans Notch", sans-serif; /* [cite: 139] */
+      font-weight: 700;
+      display: block;
+    }
+
+    .width-control {
+      margin-left: auto;
+      display: flex; /* [cite: 140] */
+      align-items: center;
+      padding-right: 15px;
+    }
+
+    #widthRange { margin-left: 8px; /* [cite: 141] */
+    }
+    .watermark-not-found {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: red;
+      transform: translateY(-50%) rotate(0deg); /* [cite: 142] */
+      letter-spacing: 3px;
+      z-index: 2000;
+      font-family: "Stack Sans Notch", sans-serif;
+      font-weight: 700;
+      margin-top: 30vh; /* [cite: 143] */
+    }
+    .watermark-bottom,
+    .watermark-left-center,
+    .watermark-not-found,
+    .watermark-page-index, /* [cite: 144] <-- ADDED */
+    .watermark-vertical-third {
+      transition: font-size 0.3s ease;
+    }
+
+    .space_box{
+      height: 10px;
+      margin: 0 auto;
+      position: relative; /*  */
+      background-color: #eeeeee;/*#eeeeee*/
+    }
+.spinner {
+      margin: 30px auto; /* [cite: 146] */
+      width: 60px; /* Refined from 5vw */
+      height: 60px; /* Refined from 5vw */
+      border: 6px solid #e0e0e0; /* Use consistent thickness */
+      border-top: 6px solid #351757; 
+      border-radius: 50%;
+      animation: spin 1s linear infinite; /* [cite: 148] */
+      display: none;}
+    @keyframes spin {
+      0% { transform: rotate(0deg); /* [cite: 149] */
+      }
+      100% { transform: rotate(360deg); /* [cite: 150] */
+      }
+    }
+    @media (orientation: portrait) {
+      .imagecontainer { width: 90%; /* [cite: 151] */
+      }
+      .space_box { width: 90%; /* [cite: 152] */
+      }
+    }
+    @media (orientation: landscape) {
+      .imagecontainer { width: 60%; /* [cite: 153] */
+      }
+      .space_box { width: 60%; /* [cite: 154] */
+      }
+    }
+    .bck_circle-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #A47AD0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s, opacity 0.3s;
+      /* Fixed position */
+      position: fixed;
+      top: 70px;
+      right: 15px;
+      z-index: 1000;
+      opacity: 0.9;
+    }
+.bck_circle-btn:focus,
+.bck_circle-btn:active {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
+  border-radius: 50%;
+}
+    .bck_circle-btn.bck_hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .bck_circle-btn:hover {
+      background-color: #ddd;
+    }
+    .bck_circle-btn svg {
+      width: 24px;
+      height: 24px;
+      stroke: #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="weblogo">
+      <span style="color:#A47AD0;">@EzeeMe</span><span style="color:white;">Bot</span>
+    </div>
+
+    <div class="width-control">
+      <label for="widthRange" style="color:white; margin-left:15px;"></label>
+      <input type="range" id="widthRange">
+      <span id="widthValue" style="color:white; margin-left:8px;"></span>
+    </div>
+  </header>
+
+<main>
+  <div class="space_box"></div>
+  <div id="notfound_container"></div> 
+  <div class="imagecontainer" id="images"></div>
+  <div class="spinner" id="loadingSpinner"></div>
+  <div class="watermark-vertical-third" id="fixedWatermark">EzeeMeBot</div>
+</main>
+
+<button id="bck_backBtn" class="bck_circle-btn" onclick="window.history.back()">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7" />
+  </svg>
+</button>
+
+<script>
+    function /* [cite: 155] */
+    decodeUrl(arr) {
+      return String.fromCharCode(...arr.map(c => c - 3)); /* [cite: 156] */
+    }
+  const chapters = {
+  "chapter1": [
+    [107, 119, 119, 115, 118, 61, 50, 50, 117, 104, 118, 49, 102, 111, 114, 120, 103, 108, 113, 100, 117, 124, 49, 102, 114, 112, 50, 103, 106, 125, 60, 121, 104, 100, 114, 59, 50, 108, 112, 100, 106, 104, 50, 120, 115, 111, 114, 100, 103, 50, 121, 52, 58, 57, 56, 55, 58, 60, 57, 55, 53, 50, 52, 51, 51, 51, 51, 56, 51, 58, 58, 57, 98, 100, 124, 120, 98, 121, 115, 107, 121, 118, 108, 49, 109, 115, 106],
+    [107, 119, 119, 115, 118, 61, 50, 50, 117, 104, 118, 49, 102, 111, 114, 120, 103, 108, 113, 100, 117, 124, 49, 102, 114, 112, 50, 103, 106, 125, 60, 121, 104, 100, 114, 59, 50, 108, 112, 100, 106, 104, 50, 120, 115, 111, 114, 100, 103, 50, 121, 52, 58, 57, 56, 55, 58, 60, 57, 55, 52, 50, 52, 51, 51, 51, 51, 56, 51, 58, 58, 58, 98, 100, 124, 120, 98, 112, 116, 108, 115, 60, 123, 49, 109, 115, 106]],
+      "chapter2": [
+    [107, 119, 119, 115, 118, 61, 50, 50, 117, 104, 118, 49, 102, 111, 114, 120, 103, 108, 113, 100, 117, 124, 49, 102, 114, 112, 50, 103, 106, 125, 60, 121, 104, 100, 114, 59, 50, 108, 112, 100, 106, 104, 50, 120, 115, 111, 114, 100, 103, 50, 121, 52, 58, 57, 56, 55, 58, 60, 59, 56, 53, 50, 52, 51, 51, 51, 51, 56, 51, 58, 59, 58, 98, 100, 124, 120, 98, 124, 54, 51, 116, 121, 113, 49, 109, 115, 106],
+    [107, 119, 119, 115, 118, 61, 50, 50, 117, 104, 118, 49, 102, 111, 114, 120, 103, 108, 113, 100, 117, 124, 49, 102, 114, 112, 50, 103, 106, 125, 60, 121, 104, 100, 114, 59, 50, 108, 112, 100, 106, 104, 50, 120, 115, 111, 114, 100, 103, 50, 121, 52, 58, 57, 56, 55, 58, 60, 59, 56, 53, 50, 52, 51, 51, 51, 51, 56, 51, 58, 59, 59, 98, 100, 124, 120, 98, 108, 125, 104, 121, 52, 123, 49, 109, 115, 106]
+  ],
+};
+function hexToString(hex) {
+  let str = '';
+  for (let i = 0; i < hex.length; i += 2) { /* [cite: 169] */
+    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16)); /* [cite: 170] */
+  }
+  return str;
+}
+const whereis = new URLSearchParams(window.location.search);
+const incriptedata = whereis.get("inc") || "7b22636861707465725f696e646578223a226368617074657231222c2265785f74696d65223a313736363231323633397d"; /* 7b7d [cite: 171] */
+let chapter = 'chapter0';
+let time_ex = 1765341404;
+if (incriptedata) {
+  try { 
+    const decoded = hexToString(incriptedata); /* [cite: 172] */
+    const json = JSON.parse(decoded);
+    if (json.chapter_index){
+      chapter = json.chapter_index; /* [cite: 173] */
+    }
+    if (json.ex_time) {
+      time_ex = json.ex_time; /* [cite: 174] */
+    }
+    }
+  catch(e) { console.error("Error 101!");
+  }
+}
+
+const container = document.getElementById('images'); /* [cite: 175] */
+const spinner = document.getElementById('loadingSpinner');
+const chapterData = chapters[chapter] || []; /* [cite: 176] */
+const totalImages = chapterData.length;
+    let loadedCount = 0;
+const BATCH_SIZE = 3; /* [cite: 177] */
+if (Array.isArray(chapterData) && chapterData.length === 0) {
+  const not_found_box = document.createElement("div");
+    not_found_box.className = "watermark-not-found"; /*  */
+  not_found_box.textContent = "Error 100!";
+  document.getElementById("notfound_container").appendChild(not_found_box);
+  document.addEventListener("DOMContentLoaded", () => {
+  const wm = document.getElementById("fixedWatermark");
+  if (wm) {
+    wm.style.display = "none";
+  }});
+  } else {
+const current_is = Math.floor(Date.now() / 1000);
+const is_vailid_time = time_ex - current_is; /* [cite: 180] */
+if (time_ex < current_is) {
+  function checkTime() {
+  const not_found_box = document.createElement("div");
+  not_found_box.className = "watermark-not-found"; /*  */
+  not_found_box.textContent = "Error 102!";
+  document.getElementById("notfound_container").appendChild(not_found_box);
+  document.addEventListener("DOMContentLoaded", () => {
+    const wm = document.getElementById("fixedWatermark");
+    const img_cont_block = document.getElementById("images");
+    const spinner_block = document.getElementById("loadingSpinner");
+    if (wm) {
+      wm.style.display = "none";
+    }
+    if (img_cont_block && spinner_block) {
+      img_cont_block.style.display = "none";
+      spinner_block.style.display = "none";
+    }
+  });
+/* [cite: 182] */ }
+checkTime();
+}
+}
+const cleanupObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const page = entry.target;
+    const img = page.querySelector('img');
+    if (!img) return;
+    if (entry.isIntersecting) {
+      if (!img.getAttribute('src')) {
+        img.src = img.dataset.src;
+        page.style.height = 'auto'; /* [cite: 183] */
+      }
+    } else {
+      if (img.getAttribute('src')) {
+        page.style.height = page.offsetHeight + 'px';
+        img.removeAttribute('src');
+    }
+    }
+/* [cite: 184] */ });
+}, 
+{
+  rootMargin: '200% 0px 200% 0px'
+});
+const infiniteScrollObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    loadNextBatch();
+  }
+}, { rootMargin: '200px' });
+function createPageElement(encodedArr, index) {
+  const url = decodeUrl(encodedArr); /* [cite: 187] */
+  const page = document.createElement('div');
+  page.className = 'page';
+  
+  const img = document.createElement('img');
+  img.dataset.src = url;
+  img.src = url; 
+  img.alt = "EzeeMe Page"; /* [cite: 189] */
+  const watermarkBottom = document.createElement('div');
+  watermarkBottom.className = 'watermark-bottom';
+  watermarkBottom.textContent = 'EzeeMeBot';
+  const watermarkLeftCenter = document.createElement('div'); /* [cite: 190] */
+  watermarkLeftCenter.className = 'watermark-left-center';
+  watermarkLeftCenter.textContent = 'EzeeMeBot';
+  const watermarkPageIndex = document.createElement('div'); /* [cite: 191] */
+  watermarkPageIndex.className = 'watermark-page-index';
+  watermarkPageIndex.textContent = `${index + 1} / ${totalImages}`; /* [cite: 192] */
+  page.appendChild(img);
+  page.appendChild(watermarkBottom);
+  page.appendChild(watermarkLeftCenter);
+  page.appendChild(watermarkPageIndex); /* [cite: 193] */
+  cleanupObserver.observe(page);
+  
+  return page; /* [cite: 194] */
+}
+function loadNextBatch() {
+  if (loadedCount >= chapterData.length) {
+    spinner.style.display = 'none'; /* [cite: 195] */
+    infiniteScrollObserver.unobserve(spinner);
+    return;
+  }
+  spinner.style.display = 'block';
+    setTimeout(() => {
+    const nextBatch = chapterData.slice(loadedCount, loadedCount + BATCH_SIZE);
+    nextBatch.forEach((encodedArr, batchIndex) => {
+      const currentIndex = loadedCount + batchIndex;
+      const page = createPageElement(encodedArr, currentIndex);
+      container.appendChild(page);
+    });
+    loadedCount += nextBatch.length;
+    resizeWatermarks(); /* [cite: 196] */
+    if (loadedCount >= chapterData.length) {
+      spinner.style.display = 'none';
+    }
+  }, 50); /* [cite: 197] */
+}
+if (chapterData.length > 0) {
+  loadNextBatch(); /* [cite: 198] */
+  infiniteScrollObserver.observe(spinner);
+} else {
+    spinner.style.display = 'none'; /* [cite: 199] */
+}
+    document.addEventListener('contextmenu', event => event.preventDefault()); /* [cite: 200] */
+    document.addEventListener('dragstart', event => event.preventDefault());
+function resizeWatermarks() {
+      const container = document.querySelector('.space_box');
+      if (!container) return;
+      const containerWidth = container.offsetWidth; /* [cite: 201] */
+      const fontSize = containerWidth * 0.05;
+      const fontSize2 = containerWidth * 0.03;
+      const index_size = containerWidth * 0.02; /* [cite: 202] */
+      const nFound_font = containerWidth * 0.08;
+      const gap_size = containerWidth * 0.01;
+    document.querySelectorAll('.page').forEach(page => {
+      page.style.marginBottom = gap_size + 'px';
+    });
+    document.querySelectorAll('.watermark-vertical-third').forEach(wm => {
+        wm.style.fontSize = fontSize + 'px'; /* [cite: 203] */
+      });
+    document.querySelectorAll('.watermark-bottom').forEach(wm => {
+        wm.style.fontSize = fontSize2 + 'px'; /* [cite: 204] */
+      });
+    document.querySelectorAll('.watermark-left-center').forEach(wm => {
+        wm.style.fontSize = fontSize2 + 'px'; /* [cite: 205] */
+      });
+      document.querySelectorAll('.watermark-page-index').forEach(wm => {
+        wm.style.fontSize = index_size + 'px'; /* [cite: 206] */
+      });
+    document.querySelectorAll('.watermark-not-found').forEach(wm_notf => {
+        wm_notf.style.fontSize = nFound_font + 'px'; /* [cite: 207] */
+      });
+    }
+    function positionVerticalWatermark() {
+      const container = document.querySelector('.space_box');
+      const wm = document.getElementById('fixedWatermark'); /*  */
+      if (!container || !wm) return;
+      const rect = container.getBoundingClientRect(); /* [cite: 209] */
+      const leftPos = rect.left + rect.width * 0.67;
+      const leftPoss = rect.left + rect.width * 0.5; /* [cite: 210] */
+      wm.style.left = leftPos + 'px';
+
+    }
+    const widthRange = document.getElementById('widthRange'); /*  */
+    const widthValue = document.getElementById('widthValue');
+    const imageContainer = document.querySelector('.imagecontainer');
+    const limits = {
+      portrait:  { min: 80, max: 95, def: 90 },
+      landscape: { min: 55, max: 95, def: 65 }
+    };
+    function getOrientation() {
+      const so = (screen.orientation && screen.orientation.type) || /* [cite: 213] */
+      screen.msOrientation || screen.mozOrientation || screen.webkitOrientation;
+      if (typeof so === 'string') {
+        return so.includes('portrait') ? /* [cite: 214] */
+        'portrait' : 'landscape';
+      }
+      return window.innerHeight >= window.innerWidth ? /* [cite: 215] */
+      'portrait' : 'landscape';
+    }
+    let currentOrientation = getOrientation(); /* [cite: 216] */
+    function applyWidth() {
+      const val = Number(widthRange.value);
+      if (Number.isNaN(val)) return;
+      imageContainer.style.width = val + '%'; /*  */
+      document.querySelector('.space_box').style.width = val + '%';
+      widthValue.textContent = val + '%';
+      resizeWatermarks();
+      positionVerticalWatermark(); /* [cite: 218] */
+    }
+    function setRangeLimitsAndDefault(mode, { forceDefault = false } = {}) {
+      const { min, max, def } = limits[mode]; /* [cite: 219] */
+      widthRange.min = String(min);
+      widthRange.max = String(max); /* [cite: 220] */
+      const current = Number(widthRange.value);
+      let nextVal;
+      if (forceDefault || Number.isNaN(current) || widthRange.value === '') { /* [cite: 221] */
+        nextVal = def; /* [cite: 222] */
+      } else {
+        nextVal = Math.min(max, Math.max(min, current)); /* [cite: 223] */
+      }
+
+      widthRange.value = String(nextVal);
+      applyWidth(); /* [cite: 224] */
+    }
+    let resizeTimer = null; /* [cite: 225] */
+    function onPossibleOrientationChange({ forceDefault = false } = {}) {
+      const newOrientation = getOrientation(); /* [cite: 226] */
+      if (newOrientation !== currentOrientation) {
+        currentOrientation = newOrientation;
+        setRangeLimitsAndDefault(currentOrientation, { forceDefault }); /* [cite: 227] */
+      }
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      currentOrientation = getOrientation();
+      setRangeLimitsAndDefault(currentOrientation, { forceDefault: true });
+      resizeWatermarks();
+      positionVerticalWatermark();
+    });
+    if (screen.orientation && typeof screen.orientation.addEventListener === 'function') {
+      screen.orientation.addEventListener('change', () => {
+        onPossibleOrientationChange({ forceDefault: true });
+      }); /* [cite: 229] */
+    } else if (screen.orientation && 'onchange' in screen.orientation) {
+      screen.orientation.onchange = () => onPossibleOrientationChange({ forceDefault: true }); /* [cite: 230] */
+    }
+    window.addEventListener('orientationchange', () => {
+      onPossibleOrientationChange({ forceDefault: true }); /* [cite: 231] */
+    });
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => onPossibleOrientationChange({ forceDefault: true }), 120);
+      resizeWatermarks();
+      positionVerticalWatermark(); /* [cite: 232] */
+    });
+    widthRange.addEventListener('input', applyWidth); 
+        let bck_lastScrollTop = 0;
+    const bck_backBtn = document.getElementById('bck_backBtn');
+    window.addEventListener('scroll', function() {
+      let bck_st = window.pageYOffset || document.documentElement.scrollTop;
+      if (bck_st > bck_lastScrollTop) {
+        bck_backBtn.classList.add('bck_hidden');
+      } else {
+        bck_backBtn.classList.remove('bck_hidden');
+      }
+      bck_lastScrollTop = bck_st <= 0 ? 0 : bck_st;
+    }, false);
+</script>
+</body>
+</html>
