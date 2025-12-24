@@ -1,0 +1,50 @@
+wepage
+  Header ✅️
+      side-icon + logo
+      text
+      side-menu
+          class-11
+          class-12
+  main
+      text
+      Thumbnail
+          notes
+              info-text+back buttun
+              chapters name
+              prizing info
+          Formula sheets
+              info-text+back buttun
+              chapters name
+              prizing info
+  floating-box
+      home = main
+      practice section
+      〽️buyed meterials
+      student info
+          svg image
+          name + class
+          user_id
+          mail box
+          channel url
+
+
+ function handleSend() {
+   if (!selectedCode) return;
+   sendBtn.innerHTML = `Request sending... <span class="chapName_spinner"></span>`;
+   fetch(student_Data.webhook, {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify({ type:'chapter_unlock', chapName_code: selectedCode, info:{name: student_Data.name, id: student_Data.id, class: student_Data.classLevel} })
+     })
+     .then(() => {
+       sendBtn.textContent = "Open Bot and check your inbox.✅️";
+       sendBtn.removeEventListener("click", handleSend);
+       sendBtn.addEventListener("click", () => {
+         confirmContainer.style.display = "none";
+       }, { once: true });
+     })
+     .catch(() => {
+       sendBtn.textContent = "Error!";
+     });
+ }
+ 
