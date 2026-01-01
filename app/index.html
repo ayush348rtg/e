@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Web Tools</title>
+<style>
+body {
+  font-family: Arial;
+  background:#111;
+  color:white;
+  text-align:center;
+}
+#tools {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  padding:20px;
+}
+.tool {
+  background:#222;
+  padding:20px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:.2s;
+}
+.tool:hover {
+  background:#0af;
+  color:black;
+}
+</style>
+</head>
+<body>
+
+<h1>🧰 My Web Tools</h1>
+<div id="tools">Loading...</div>
+
+<script>
+const user = "YOUR_GITHUB_USERNAME";
+const repo = "toolbox";   // your repo name
+const api = `https://api.github.com/repos/${user}/${repo}/contents/tools`;
+
+fetch(api)
+  .then(res => res.json())
+  .then(data => {
+    let html = "";
+    data.forEach(item => {
+      if(item.type === "dir") {
+        html += `
+          <div class="tool" onclick="openTool('${item.name}')">
+            📂 ${item.name}
+          </div>
+        `;
+      }
+    });
+    document.getElementById("tools").innerHTML = html;
+  });
+
+function openTool(name){
+  window.location.href = "tools/" + name + "/";
+}
+</script>
+
+</body>
+</html>
